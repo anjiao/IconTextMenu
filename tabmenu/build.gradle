@@ -28,9 +28,13 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.0.1'
 }
 
-/** 以下开始是将Android Library上传到jcenter的相关配置**/
-def siteUrl = 'https://github.com/anjiao/IconTextMenu' // 项目的主页
-def gitUrl = 'https://github.com/anjiao/IconTextMenu.git' // Git仓库的url
+def siteUrl = 'https://github.com/anjiao/IconTextMenu'
+def gitUrl = 'https://github.com/anjiao/IconTextMenu.git'
+
+
+def issueUrl = 'https://github.com/anjiao/IconTextMenu/issues'
+def linksUrl = 'https://github.com/anjiao/IconTextMenu/wiki'
+
 
 group = "com.joe.tabmenu"
 
@@ -49,7 +53,7 @@ install {
                     }
                 }
                 developers {
-                    developer {//填写的一些基本信息
+                    developer {
                         id 'joe'
                         name 'anjiao'
                         email '381510730@qq.com'
@@ -73,11 +77,22 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    options.links linksUrl
+    failOnError false
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
 }
 
 artifacts {
@@ -93,11 +108,15 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "IconTextMenu"    //发布到JCenter上的项目名字
+        name = "IconTextMenu"
+        desc = "首页图文按钮"
         websiteUrl = siteUrl
         vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
         licenses = ["Apache-2.0"]
+        labels = ['android']    //标签
         publish = true
+        publicDownloadNumbers = true
     }
 }
 
